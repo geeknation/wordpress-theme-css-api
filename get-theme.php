@@ -51,6 +51,7 @@ foreach ($themes as $theme) {
     array_push($siteThemes, $themeProfile);
 
 }
+header('Content-Type: application/json; charset=utf-8');
 echo json_encode($siteThemes);
 
 ?>

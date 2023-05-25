@@ -29,11 +29,12 @@ curl_close($ch);
 
 // Decode the JSON response
 $themes = json_decode($response, true);
-echo json_encode($themes,JSON_UNESCAPED_SLASHES);exit();
+// header('Content-Type: application/json; charset=utf-8');
+// echo json_encode($themes,JSON_UNESCAPED_SLASHES);exit();
 // Find the active theme
 $activeTheme = null;
 foreach ($themes as $theme) {
-    if ($theme['active']) {
+    if ($theme['status']=="active") {
         $activeTheme = $theme;
         break;
     }
@@ -43,9 +44,12 @@ foreach ($themes as $theme) {
 if ($activeTheme === null) {
     die('Active theme not found.');
 }
-
+// header('Content-Type: application/json; charset=utf-8');
+// echo json_encode($activeTheme,JSON_UNESCAPED_SLASHES);exit();
 // Get the stylesheet URL of the active theme
-$stylesheetUrl = $siteUrl . $activeTheme['stylesheet'];
+$stylesheetUrl = $siteUrl ."/". $activeTheme['stylesheet'];
+
+
 
 // Initialize cURL for fetching the stylesheet
 $ch = curl_init();
@@ -65,6 +69,7 @@ if ($stylesheetContent === false) {
 
 // Close cURL
 curl_close($ch);
+
 
 // Output the stylesheet content
 echo $stylesheetContent;
