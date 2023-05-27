@@ -47,8 +47,7 @@ if ($activeTheme === null) {
 // header('Content-Type: application/json; charset=utf-8');
 // echo json_encode($activeTheme,JSON_UNESCAPED_SLASHES);exit();
 // Get the stylesheet URL of the active theme
-$stylesheetUrl = $siteUrl ."/". $activeTheme['stylesheet'];
-
+$stylesheetUrl = $apiUrl ."/". $activeTheme['stylesheet'];
 
 
 // Initialize cURL for fetching the stylesheet
@@ -71,6 +70,35 @@ if ($stylesheetContent === false) {
 curl_close($ch);
 
 
-// Output the stylesheet content
-echo $stylesheetContent;
+function stdClassToArray($stdClassObject) {
+    if (is_object($stdClassObject)) {
+        $stdClassObject = (array)$stdClassObject;
+    }
+
+    if (is_array($stdClassObject)) {
+        $convertedArray = array();
+
+        foreach ($stdClassObject as $key => $value) {
+            if (is_object($value) || is_array($value)) {
+                $convertedArray[$key] = stdClassToArray($value);
+            } else {
+                $convertedArray[$key] = $value;
+            }
+        }
+
+        return $convertedArray;
+    } else {
+        return $stdClassObject;
+    }
+}
+
+
+
+$respArr = stdClassToArray(json_decode($stylesheetContent));
+//header('Content-Type: application/json; charset=utf-8');
+// echo json_encode($respArr['_links'],JSON_UNESCAPED_SLASHES);
+
+$stylesheet = $respArr['_links']['wp:user-global-styles'][0]['href'];
+
+echo $stylesheet; 
 ?>
